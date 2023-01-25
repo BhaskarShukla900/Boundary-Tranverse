@@ -1,0 +1,141 @@
+// Print boundary transeversal oreder not using vector
+
+#include<iostream>
+#include<queue>
+#include<vector>
+using namespace std;
+
+class node{
+public:
+int data;
+node*left;
+node*right;
+node(int data){
+    this->data=data;
+    this->left=NULL;
+    this->right=NULL;
+}
+};
+
+node*buildtrees(node* root){
+int data;
+cout<<"Enter the root data: \n";
+cin>>data;
+root=new node(data);
+if(data==-1){
+    return NULL;
+}
+cout<<"Enter the left child data for: "<<data<<endl;
+root->left=buildtrees(root->left);
+cout<<"Enter the data for right child: "<<data<<endl;
+root->right=buildtrees(root->right);
+     return root;
+}
+
+void levelOrderTraversal(node *root){
+queue<node*> q;
+q.push(root);
+q.push(NULL);
+
+while (!q.empty())
+{
+    node*temp=q.front();
+    q.pop();
+    if(temp==NULL){
+        //  Gap ke liye ie Level 1 complete
+        cout<<endl;
+        if(!q.empty()){
+            q.push(NULL);
+        }
+    }
+    else{
+        cout<<temp->data<<" ";
+        if(temp->left){
+            q.push(temp->left);
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+    }
+}
+}
+
+void printLeaves(node* root)
+{
+    if (root == nullptr)
+        return;
+ 
+    printLeaves(root->left);
+ 
+    // Print it if it is a leaf node
+    if (!(root->left) && !(root->right))
+        cout << root->data << " ";
+ 
+    printLeaves(root->right);
+}
+void printBoundaryLeft(node* root)
+{
+    if (root == nullptr)
+        return;
+ 
+    if (root->left) {
+        cout << root->data << " ";
+        printBoundaryLeft(root->left);
+    }
+    else if (root->right) {
+        cout << root->data << " ";
+        printBoundaryLeft(root->right);
+    }
+}
+ 
+// A function to print all right boundary nodes, except a
+// leaf node Print the nodes in BOTTOM UP manner
+void printBoundaryRight(node* root)
+{
+    if (root == nullptr)
+        return;
+ 
+    if (root->right) {
+        // to ensure bottom up order, first call for right
+        // subtree, then print this node
+        printBoundaryRight(root->right);
+        cout << root->data << " ";
+    }
+    else if (root->left) {
+        printBoundaryRight(root->left);
+        cout << root->data << " ";
+    }
+}
+ 
+// A function to do boundary traversal of a given binary
+// tree
+void printBoundary(node* root)
+{
+    if (root == nullptr)
+        return;
+ 
+    cout << root->data << " ";
+ 
+    // Print the left boundary in top-down manner.
+    printBoundaryLeft(root->left);
+ 
+    // Print all leaf nodes
+    printLeaves(root->left);
+    printLeaves(root->right);
+ 
+    // Print the right boundary in bottom-up manner
+    printBoundaryRight(root->right);
+}
+
+int main(){
+    node*root=NULL;
+   root= buildtrees(root);
+    cout<<"The level order tree is: \n";
+    levelOrderTraversal(root);
+    cout<<"The boundary values of tree is: \n";
+printBoundary(root);
+
+    // 1 3 7 -1 -1 11 -1 -1 5 17 -1 -1 -1
+
+return 0;
+}
